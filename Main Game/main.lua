@@ -10,16 +10,7 @@ Player.x=WINDOW_WIDTH/2-Player.width/2
 Player.speed=75
 
 --------------------------Bullets---------------------------------------------
-function createbullets()
-    local bullet={}
-    bullet.width=5
-    bullet.height=15
-    bullet.x=Player.x+Player.width/2-bullet.width/2
-    bullet.y=Player.y-bullet.height
-    bullet.speed=500
-    return bullet
-    
-end
+
 
 all_bullets={}
 
@@ -31,47 +22,102 @@ function love.load()
 end
 
 function love.update(dt)
-
+    
+    --for bullet
     timer=timer+dt
+
+---------------------------mouse movement for player--------------------------------------------
+    --will find out mouse location
+    local mouseX, mouseY = love.mouse.getPosition()
+
+    -- Calculate the angle between the player and the mouse
+    local angle = math.atan2(mouseY - Player.y, mouseX - Player.x)
+
+    -- Calculate the player's velocity based on the angle and speed
+    local velocityX = Player.speed * math.cos(angle)
+    local velocityY = Player.speed * math.sin(angle)
+
+    -- Handle 'W' key movement
+    if love.keyboard.isDown('w') then
+            Player.x = Player.x + velocityX * dt
+            Player.y = Player.y + velocityY * dt
+    end
 
     -----------------------player movement-----------------------------------------------------
 
-    if love.keyboard.isDown("a") and Player.x>0 then
-        Player.x=Player.x-Player.speed*dt
+    -- if love.keyboard.isDown("a") and Player.x>0 then
+    --     Player.x=Player.x-Player.speed*dt
         
-    end
-    if love.keyboard.isDown("w") and Player.y>0 then
-        Player.y=Player.y-Player.speed*dt
+    -- end
+    -- if love.keyboard.isDown("w") and Player.y>0 then
+    --     Player.y=Player.y-Player.speed*dt
         
-    end
-    if love.keyboard.isDown("s") and Player.y<WINDOW_HEIGHT-Player.height then
-        Player.y=Player.y+Player.speed*dt
+    -- end
+    -- if love.keyboard.isDown("s") and Player.y<WINDOW_HEIGHT-Player.height then
+    --     Player.y=Player.y+Player.speed*dt
         
-    end
-    if love.keyboard.isDown("d") and Player.x<WINDOW_WIDTH-Player.width then
-        Player.x=Player.x+Player.speed*dt
+    -- end
+    -- if love.keyboard.isDown("d") and Player.x<WINDOW_WIDTH-Player.width then
+    --     Player.x=Player.x+Player.speed*dt
         
-    end
+    -- end
 
     -----------------------bullet function and movement-----------------------------------------
+    -- function createbullets()
+    --     local bullet={}
+    --     bullet.width=5
+    --     bullet.height=15
+    --     bullet.x=Player.x+Player.width/2-bullet.width/2
+    --     bullet.y=Player.y-bullet.height
+    --     bullet.speed=500
+    --     bullet.dx= bullet.speed*math.cos(angle)
+    --     return bullet
+        
+    -- end
 
     if love.keyboard.isDown("space") then
           if timer>=0.1 then
-            table.insert(all_bullets,createbullets())
+           
+            local bulletspeed=750
+
+            local bullet={}
+            bullet.width=5
+            bullet.height=15
+            bullet.x=Player.x+Player.width/2-bullet.width/2
+            bullet.y=Player.y+Player.height/2-bullet.height/2
+            bullet.dx= bulletspeed*math.cos(angle)
+            bullet.dy= bulletspeed*math.sin(angle)
+
+            table.insert(all_bullets,bullet)
+
             timer=0
         end
         
     end
 
-    for k, v in pairs(all_bullets) do
-        v.y=v.y-v.speed*dt
-    end
+    --old implementation
+    -- for k, v in pairs(all_bullets) do
+    --     v.y=v.y-v.speed*dt
+    -- end
 
-    -- to delete extra bullets
+    -- -- to delete extra bullets
+    -- for k, v in pairs(all_bullets) do
+    --     if v.y<-v.height  then
+    --             table.remove(all_bullets,k)  
+    --     end
+    -- end
+
     for k, v in pairs(all_bullets) do
-        if v.y<-v.height  then
-                table.remove(all_bullets,k)  
+        --bullet movement acc to mouse
+        v.x=v.x+v.dx*dt
+        v.y=v.y+v.dy*dt
+
+        --removing extra bullets of the screen
+        if v.x>WINDOW_WIDTH-v.width or v.x<0 or v.y>WINDOW_HEIGHT or v.y<-v.height  then
+            table.remove(all_bullets,k)
+            
         end
+        
     end
 
 end
@@ -84,10 +130,12 @@ function love.draw()
 
     --bullet
     for k, v in pairs(all_bullets) do
-        love.graphics.rectangle("fill",v.x,v.y,v.width,v.height)
+        -- love.graphics.circle(mode,x,y,radius)
+        love.graphics.circle("fill",v.x,v.y,5)
         
     end
 
+    --no of bullets generated
     love.graphics.print(#all_bullets,25,25)
     
 end
