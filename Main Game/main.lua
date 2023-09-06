@@ -18,7 +18,7 @@ Player.width=50
 Player.height=50
 Player.y=WINDOW_HEIGHT-Player.height
 Player.x=WINDOW_WIDTH/2-Player.width/2
-Player.speed=75
+Player.speed=200
 Player.health_width=150
 Player.health_height=20
 
@@ -31,6 +31,9 @@ all_bullets={}
 function love.load()
     love.window.setMode(WINDOW_WIDTH,WINDOW_HEIGHT)
     timer=0
+
+    --images for the game
+    player_image=love.graphics.newImage("survivor-idle_rifle_0.png")
     
 end
 
@@ -45,6 +48,9 @@ function love.update(dt)
 
     -- Calculate the angle between the player and the mouse
     local angle = math.atan2(mouseY - Player.y, mouseX - Player.x)
+
+    --players direction
+    Player.direction=angle
 
     -- Calculate the player's velocity based on the angle and speed
     local velocityX = Player.speed * math.cos(angle)
@@ -106,6 +112,8 @@ function love.update(dt)
             timer=0
         end
         
+
+
     end
 
     --old implementation
@@ -142,10 +150,12 @@ function love.draw()
     local font2=love.graphics.newFont("Akira Expanded Demo.otf")
 
 
-    --player
+     
     -- love.graphics.rectangle(mode,x,y,width,height)
-    love.graphics.setColor(1,1,1)
-    love.graphics.rectangle("fill",Player.x,Player.y,Player.width,Player.height)
+    -- love.graphics.setColor(1,1,1)
+    -- love.graphics.rectangle("fill",Player.x,Player.y,Player.width,Player.height)
+    -- love.graphics.draw(drawable,x,y,r,sx,sy,ox,oy)
+  
 
     --bullet
     for k, v in pairs(all_bullets) do
@@ -153,6 +163,15 @@ function love.draw()
         love.graphics.circle("fill",v.x,v.y,5)
         
     end
+
+    --player drawing
+
+    local centerX = Player.x + player_image:getWidth() / 2
+    local centerY = Player.y + player_image:getHeight() / 2
+
+    love.graphics.setColor(1,1,1)
+    love.graphics.draw(player_image,centerX,centerY,Player.direction,0.4,0.4,player_image:getWidth()/2,player_image:getHeight()/2)
+    love.graphics.rectangle("fill",Player.x,Player.y,Player.width,Player.height)
 
     --to make players health
     -- love.graphics.setFont(font1)
