@@ -13,14 +13,7 @@ WINDOW_HEIGHT=750
 WINDOW_WIDTH=750
 
 --------------------------Player------------------------------------------
-Player={}
-Player.width=50
-Player.height=50
-Player.y=WINDOW_HEIGHT-Player.height
-Player.x=WINDOW_WIDTH/2-Player.width/2
-Player.speed=200
-Player.health_width=150
-Player.health_height=20
+
 
 --------------------------Bullets---------------------------------------------
 
@@ -32,10 +25,26 @@ function love.load()
     love.window.setMode(WINDOW_WIDTH,WINDOW_HEIGHT)
     timer=0
 
+    --player 
+    Player={}
+    -- Player.width=50
+    -- Player.height=50
+    Player.image=love.graphics.newImage("survivor-idle_rifle_0.png")
+    Player.width=Player.image:getWidth()
+    Player.height=Player.image:getHeight()
+    Player.y=WINDOW_HEIGHT-Player.height
+    Player.x=WINDOW_WIDTH/2-Player.width/2
+    Player.speed=200
+    Player.health_width=150
+    Player.health_height=20
+    Player.angle=0
+
     --images for the game
     player_image=love.graphics.newImage("survivor-idle_rifle_0.png")
     
 end
+
+
 
 function love.update(dt)
     
@@ -44,7 +53,8 @@ function love.update(dt)
 
 ---------------------------mouse movement for player--------------------------------------------
     --will find out mouse location
-    local mouseX, mouseY = love.mouse.getPosition()
+    local mouseX, mouseY = love.mouse.getX() , love.mouse.getY()
+    Player.angle=math.atan2(mouseY - (Player.y + Player.height / 2), mouseX - (Player.x + Player.width / 2))
 
     -- Calculate the angle between the player and the mouse
     local angle = math.atan2(mouseY - Player.y, mouseX - Player.x)
@@ -104,8 +114,8 @@ function love.update(dt)
             bullet.height=15
             bullet.x=Player.x+Player.width/2-bullet.width/2
             bullet.y=Player.y+Player.height/2-bullet.height/2
-            bullet.dx= bulletspeed*math.cos(angle)
-            bullet.dy= bulletspeed*math.sin(angle)
+            bullet.dx= bulletspeed*math.cos(Player.angle)
+            bullet.dy= bulletspeed*math.sin(Player.angle)
 
             table.insert(all_bullets,bullet)
 
@@ -170,8 +180,8 @@ function love.draw()
     local centerY = Player.y + player_image:getHeight() / 2
 
     love.graphics.setColor(1,1,1)
-    love.graphics.draw(player_image,centerX,centerY,Player.direction,0.4,0.4,player_image:getWidth()/2,player_image:getHeight()/2)
-    love.graphics.rectangle("fill",Player.x,Player.y,Player.width,Player.height)
+    love.graphics.draw(Player.image,Player.x + Player.width / 2,Player.y + Player.height / 2,Player.angle,0.4,0.4,Player.width/2,Player.height/2)
+    love.graphics.rectangle("line",Player.x,Player.y,Player.width,Player.height)
 
     --to make players health
     -- love.graphics.setFont(font1)
