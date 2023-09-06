@@ -6,7 +6,7 @@
 -- 2.Player can shoot with directions given by the mouse
 -- 3.Enemies will be spawned randomly anywhere and will follow you and decrease your health
 -- 4.You can either kill enmies for high score but ultimately "ESCAPE" the world/room.
-
+--hello world
 --------------------------Start-------------------------------------------------
 
 WINDOW_HEIGHT=750
