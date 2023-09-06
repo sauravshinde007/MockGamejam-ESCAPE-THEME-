@@ -1,3 +1,14 @@
+-- Escape THeme Game (Mock Game Jam)
+
+-- Top Down Game
+
+-- 1.Player can move in all directions
+-- 2.Player can shoot with directions given by the mouse
+-- 3.Enemies will be spawned randomly anywhere and will follow you and decrease your health
+-- 4.You can either kill enmies for high score but ultimately "ESCAPE" the world/room.
+
+--------------------------Start-------------------------------------------------
+
 WINDOW_HEIGHT=750
 WINDOW_WIDTH=750
 
@@ -8,6 +19,8 @@ Player.height=50
 Player.y=WINDOW_HEIGHT-Player.height
 Player.x=WINDOW_WIDTH/2-Player.width/2
 Player.speed=75
+Player.health_width=150
+Player.health_height=20
 
 --------------------------Bullets---------------------------------------------
 
@@ -37,30 +50,30 @@ function love.update(dt)
     local velocityX = Player.speed * math.cos(angle)
     local velocityY = Player.speed * math.sin(angle)
 
-    -- Handle 'W' key movement
-    if love.keyboard.isDown('w') then
-            Player.x = Player.x + velocityX * dt
-            Player.y = Player.y + velocityY * dt
+    -- -- Handle 'W' key movement
+    -- if love.keyboard.isDown('w') then
+    --         Player.x = Player.x + velocityX * dt
+    --         Player.y = Player.y + velocityY * dt
+    -- end
+
+
+
+    if love.keyboard.isDown("a") and Player.x>0 then
+        Player.x=Player.x-Player.speed*dt
+        
     end
-
-    -----------------------player movement-----------------------------------------------------
-
-    -- if love.keyboard.isDown("a") and Player.x>0 then
-    --     Player.x=Player.x-Player.speed*dt
+    if love.keyboard.isDown("w") and Player.y>0 then
+        Player.y=Player.y-Player.speed*dt
         
-    -- end
-    -- if love.keyboard.isDown("w") and Player.y>0 then
-    --     Player.y=Player.y-Player.speed*dt
+    end
+    if love.keyboard.isDown("s") and Player.y<WINDOW_HEIGHT-Player.height then
+        Player.y=Player.y+Player.speed*dt
         
-    -- end
-    -- if love.keyboard.isDown("s") and Player.y<WINDOW_HEIGHT-Player.height then
-    --     Player.y=Player.y+Player.speed*dt
+    end
+    if love.keyboard.isDown("d") and Player.x<WINDOW_WIDTH-Player.width then
+        Player.x=Player.x+Player.speed*dt
         
-    -- end
-    -- if love.keyboard.isDown("d") and Player.x<WINDOW_WIDTH-Player.width then
-    --     Player.x=Player.x+Player.speed*dt
-        
-    -- end
+    end
 
     -----------------------bullet function and movement-----------------------------------------
     -- function createbullets()
@@ -74,7 +87,7 @@ function love.update(dt)
     --     return bullet
         
     -- end
-
+    -----------------------bullet creation and deletion acc to mouse-----------------------------------------------------
     if love.keyboard.isDown("space") then
           if timer>=0.1 then
            
@@ -106,7 +119,7 @@ function love.update(dt)
     --             table.remove(all_bullets,k)  
     --     end
     -- end
-
+    --------------------------bullet movement-----------------------------------------------------
     for k, v in pairs(all_bullets) do
         --bullet movement acc to mouse
         v.x=v.x+v.dx*dt
@@ -124,6 +137,10 @@ end
 
 function love.draw()
 
+    --font for the text
+    font1=love.graphics.newFont("MockGamejam/Main Game/Akira Expanded Demo.otf",10)
+    font2=love.graphics.newFont("MockGamejam/Main Game/Akira Expanded Demo.otf",30)
+
     --player
     -- love.graphics.rectangle(mode,x,y,width,height)
     love.graphics.rectangle("fill",Player.x,Player.y,Player.width,Player.height)
@@ -134,6 +151,11 @@ function love.draw()
         love.graphics.circle("fill",v.x,v.y,5)
         
     end
+
+    --to make players health
+    love.graphics.setFont(font1)
+    love.graphics.setColor(1,1,1)
+    love.graphics.print("Player's Health",30,30)
 
     --no of bullets generated
     love.graphics.print(#all_bullets,25,25)
