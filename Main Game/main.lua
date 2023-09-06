@@ -138,11 +138,13 @@ end
 function love.draw()
 
     --font for the text
-    font1=love.graphics.newFont("MockGamejam/Main Game/Akira Expanded Demo.otf",10)
-    font2=love.graphics.newFont("MockGamejam/Main Game/Akira Expanded Demo.otf",30)
+    local font1=love.graphics.newFont("ARIALBD 1.TTF")
+    local font2=love.graphics.newFont("Akira Expanded Demo.otf")
+
 
     --player
     -- love.graphics.rectangle(mode,x,y,width,height)
+    love.graphics.setColor(1,1,1)
     love.graphics.rectangle("fill",Player.x,Player.y,Player.width,Player.height)
 
     --bullet
@@ -153,11 +155,20 @@ function love.draw()
     end
 
     --to make players health
-    love.graphics.setFont(font1)
+    -- love.graphics.setFont(font1)
     love.graphics.setColor(1,1,1)
-    love.graphics.print("Player's Health",30,30)
+    love.graphics.setFont(font2)
+    love.graphics.print("Player's Health",30,30,0,1.1,1.1)
+    -- love.graphics.print(text,x,y,r,sx,sy,ox,oy)
+
+    --player health bar
+    love.graphics.setColor(0,1,0)
+    love.graphics.rectangle("fill",30,50,Player.health_width,Player.health_height)
+    love.graphics.setColor(0,0,0)
+    love.graphics.rectangle("line",30,50,150,20)
 
     --no of bullets generated
-    love.graphics.print(#all_bullets,25,25)
+    love.graphics.setColor(0,1,0)
+    love.graphics.print(#all_bullets,15,15)
     
 end
