@@ -20,10 +20,15 @@ WINDOW_WIDTH=750
 
 all_bullets={}
 
+--will contain last location of the mouse
+ lastMouseX, lastMouseY = love.mouse.getPosition()
 
 function love.load()
     love.window.setMode(WINDOW_WIDTH,WINDOW_HEIGHT)
     timer=0
+
+    -- Set the mouse cursor visibility to false
+    love.mouse.setVisible(false)
 
     --player 
     Player={}
@@ -54,26 +59,17 @@ function love.update(dt)
 ---------------------------mouse movement for player--------------------------------------------
     --will find out mouse location
     local mouseX, mouseY = love.mouse.getX() , love.mouse.getY()
-    Player.angle=math.atan2(mouseY - (Player.y + Player.height / 2), mouseX - (Player.x + Player.width / 2))
 
-    -- Calculate the angle between the player and the mouse
-    local angle = math.atan2(mouseY - Player.y, mouseX - Player.x)
+    if mouseX~=lastMouseX or mouseY ~=lastMouseY then
+        Player.angle=math.atan2(mouseY - (Player.y + Player.height / 2), mouseX - (Player.x + Player.width / 2))
 
-    --players direction
-    Player.direction=angle
+        
+    end
 
-    -- Calculate the player's velocity based on the angle and speed
-    local velocityX = Player.speed * math.cos(angle)
-    local velocityY = Player.speed * math.sin(angle)
+    lastMouseX,lastMouseY=mouseX,mouseY
+    -- Player.angle=math.atan2(mouseY - (Player.y + Player.height / 2), mouseX - (Player.x + Player.width / 2))
 
-    -- -- Handle 'W' key movement
-    -- if love.keyboard.isDown('w') then
-    --         Player.x = Player.x + velocityX * dt
-    --         Player.y = Player.y + velocityY * dt
-    -- end
-
-
-
+    --player movement on keyboard
     if love.keyboard.isDown("a") and Player.x>0 then
         Player.x=Player.x-Player.speed*dt
         
