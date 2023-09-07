@@ -35,14 +35,15 @@ function love.load()
     -- Player.width=50
     -- Player.height=50
     Player.image=love.graphics.newImage("survivor-idle_rifle_0.png")
-    Player.width=Player.image:getWidth()
-    Player.height=Player.image:getHeight()
+    Player.width=Player.image:getWidth()/2
+    Player.height=Player.image:getHeight()-80
     Player.y=WINDOW_HEIGHT-Player.height
     Player.x=WINDOW_WIDTH/2-Player.width/2
     Player.speed=200
     Player.health_width=150
     Player.health_height=20
     Player.angle=0
+    Player.roationspeed=10
 
     --images for the game
     player_image=love.graphics.newImage("survivor-idle_rifle_0.png")
@@ -60,9 +61,17 @@ function love.update(dt)
     --will find out mouse location
     local mouseX, mouseY = love.mouse.getX() , love.mouse.getY()
 
-    if mouseX~=lastMouseX or mouseY ~=lastMouseY then
-        Player.angle=math.atan2(mouseY - (Player.y + Player.height / 2), mouseX - (Player.x + Player.width / 2))
+    -- --will maintain direction of player
+    -- if mouseX~=lastMouseX or mouseY ~=lastMouseY then
+    --     Player.angle=math.atan2(mouseY - (Player.y + Player.height / 2), mouseX - (Player.x + Player.width / 2)) 
+    -- end
 
+    --will maintain direction of player
+    if mouseX~=lastMouseX or mouseY ~=lastMouseY then
+        local angle= math.atan2(mouseY-Player.y,mouseX-Player.x)
+        local delta= angle-Player.angle
+        delta=(delta+math.pi) % (2 * math.pi) - math.pi -- Wrap to [-pi, pi]
+        Player.angle=Player.angle+ delta*Player.roationspeed*dt
         
     end
 
@@ -87,20 +96,8 @@ function love.update(dt)
         
     end
 
-    -----------------------bullet function and movement-----------------------------------------
-    -- function createbullets()
-    --     local bullet={}
-    --     bullet.width=5
-    --     bullet.height=15
-    --     bullet.x=Player.x+Player.width/2-bullet.width/2
-    --     bullet.y=Player.y-bullet.height
-    --     bullet.speed=500
-    --     bullet.dx= bullet.speed*math.cos(angle)
-    --     return bullet
-        
-    -- end
     -----------------------bullet creation and deletion acc to mouse-----------------------------------------------------
-    if love.keyboard.isDown("space") then
+    if love.keyboard.isDown("space") or love.mouse.isDown(1) then
           if timer>=0.1 then
            
             local bulletspeed=750
@@ -108,8 +105,10 @@ function love.update(dt)
             local bullet={}
             bullet.width=5
             bullet.height=15
-            bullet.x=Player.x+Player.width/2-bullet.width/2
-            bullet.y=Player.y+Player.height/2-bullet.height/2
+            -- bullet.x=Player.x+Player.width/2-bullet.width/2
+            -- bullet.y=Player.y+Player.height/2-bullet.height/2
+            bullet.x=Player.x+Player.width/2
+            bullet.y=Player.y+Player.height/2
             bullet.dx= bulletspeed*math.cos(Player.angle)
             bullet.dy= bulletspeed*math.sin(Player.angle)
 
@@ -166,17 +165,14 @@ function love.draw()
     --bullet
     for k, v in pairs(all_bullets) do
         -- love.graphics.circle(mode,x,y,radius)
-        love.graphics.circle("fill",v.x,v.y,5)
+        love.graphics.setColor(1,1,1)
+        love.graphics.circle("fill",v.x,v.y,3)
         
     end
 
     --player drawing
-
-    local centerX = Player.x + player_image:getWidth() / 2
-    local centerY = Player.y + player_image:getHeight() / 2
-
     love.graphics.setColor(1,1,1)
-    love.graphics.draw(Player.image,Player.x + Player.width / 2,Player.y + Player.height / 2,Player.angle,0.4,0.4,Player.width/2,Player.height/2)
+    love.graphics.draw(Player.image,Player.x + Player.width / 2,Player.y + Player.height / 2,Player.angle,0.3,0.3,Player.width/2,Player.height/2)
     love.graphics.rectangle("line",Player.x,Player.y,Player.width,Player.height)
 
     --to make players health
@@ -195,5 +191,9 @@ function love.draw()
     --no of bullets generated
     love.graphics.setColor(0,1,0)
     love.graphics.print(#all_bullets,15,15)
+
+ 
+    -- -- Draw the mouse cursor
+    -- love.graphics.circle("fill", love.mouse.getX(), love.mouse.getY(), 5)
     
 end
