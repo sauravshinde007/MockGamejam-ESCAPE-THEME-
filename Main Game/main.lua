@@ -41,6 +41,7 @@ function love.load()
 
     --images for the game
     player_image=love.graphics.newImage("survivor-idle_rifle_0.png")
+    crosshair_image = love.graphics.newImage('crosshair.png')
     
 end
 
@@ -91,7 +92,7 @@ function love.update(dt)
     end
 
     -----------------------bullet creation and deletion acc to mouse-----------------------------------------------------
-    if love.keyboard.isDown("space") or love.mouse.isDown(1) then
+    if love.mouse.isDown(1) then
           if timer>=0.1 then
            
             local bulletspeed=750
@@ -170,11 +171,11 @@ function love.draw()
     love.graphics.rectangle("line",30,50,150,20)
 
     --no of bullets generated
-    love.graphics.setColor(0,1,0)
     love.graphics.print(#all_bullets,15,15)
 
  
     -- -- Draw the mouse cursor
-    -- love.graphics.circle("fill", love.mouse.getX(), love.mouse.getY(), 5)
+    love.graphics.setColor(1, 0, 0)
+    love.graphics.draw(crosshair_image, love.mouse.getX(), love.mouse.getY(), 0, 0.1, 0.1)
     
 end
