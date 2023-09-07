@@ -29,8 +29,8 @@ function love.load()
     --player 
     Player={}
     Player.image=love.graphics.newImage("survivor-idle_rifle_0.png")
-    Player.width=Player.image:getWidth()/2
-    Player.height=Player.image:getHeight()-80
+    Player.width=30
+    Player.height=30
     Player.y=WINDOW_HEIGHT-Player.height
     Player.x=WINDOW_WIDTH/2-Player.width/2
     Player.speed=200
@@ -42,6 +42,8 @@ function love.load()
     --images for the game
     player_image=love.graphics.newImage("survivor-idle_rifle_0.png")
     crosshair_image = love.graphics.newImage('crosshair.png')
+    crosshair_width = crosshair_image:getWidth()
+    crosshair_height = crosshair_image:getHeight()
     
 end
 
@@ -61,17 +63,21 @@ function love.update(dt)
     --     Player.angle=math.atan2(mouseY - (Player.y + Player.height / 2), mouseX - (Player.x + Player.width / 2)) 
     -- end
 
-    --will maintain direction of player
-    if mouseX~=lastMouseX or mouseY ~=lastMouseY then
-        local angle= math.atan2(mouseY-Player.y,mouseX-Player.x)
-        local delta= angle-Player.angle
-        delta=(delta+math.pi) % (2 * math.pi) - math.pi -- Wrap to [-pi, pi]
-        Player.angle=Player.angle+ delta*Player.roationspeed*dt
-        
-    end
 
-    lastMouseX,lastMouseY=mouseX,mouseY
-    -- Player.angle=math.atan2(mouseY - (Player.y + Player.height / 2), mouseX - (Player.x + Player.width / 2))
+    -- Don't need this
+    --will maintain direction of player
+    --if mouseX~=lastMouseX or mouseY ~=lastMouseY then
+        --local angle= math.atan2(mouseY-Player.y,mouseX-Player.x)
+        --local delta= angle-Player.angle
+        --delta=(delta+math.pi) % (2 * math.pi) - math.pi -- Wrap to [-pi, pi]
+        --Player.angle=Player.angle+ delta*Player.roationspeed*dt
+        
+    --end
+
+    --lastMouseX,lastMouseY=mouseX,mouseY
+
+    -- This is enough to calc rotation
+    Player.angle=math.atan2(mouseY - (Player.y + Player.height / 2), mouseX - (Player.x + Player.width / 2))
 
     --player movement on keyboard
     if love.keyboard.isDown("a") and Player.x>0 then
@@ -137,7 +143,6 @@ function love.draw()
     local font2=love.graphics.newFont("Akira Expanded Demo.otf")
 
 
-     
     -- love.graphics.rectangle(mode,x,y,width,height)
     -- love.graphics.setColor(1,1,1)
     -- love.graphics.rectangle("fill",Player.x,Player.y,Player.width,Player.height)
@@ -154,8 +159,13 @@ function love.draw()
 
     --player drawing
     love.graphics.setColor(1,1,1)
-    love.graphics.draw(Player.image,Player.x + Player.width / 2,Player.y + Player.height / 2,Player.angle,0.3,0.3,Player.width/2,Player.height/2)
-    love.graphics.rectangle("line",Player.x,Player.y,Player.width,Player.height)
+    centerX = Player.x + Player.width/2
+    centerY = Player.y + Player.height/2
+    love.graphics.draw(Player.image, centerX, centerY, Player.angle, 0.2, 0.2, centerX * 0.2, centerY * 0.2)
+
+    -- For Debugging
+    --love.graphics.circle("fill", centerX, centerY, 5)
+    --love.graphics.rectangle("line",Player.x,Player.y,Player.width,Player.height)
 
     --to make players health
     -- love.graphics.setFont(font1)
@@ -176,6 +186,6 @@ function love.draw()
  
     -- -- Draw the mouse cursor
     love.graphics.setColor(1, 0, 0)
-    love.graphics.draw(crosshair_image, love.mouse.getX(), love.mouse.getY(), 0, 0.1, 0.1)
+    love.graphics.draw(crosshair_image, love.mouse.getX(), love.mouse.getY(), 0, 0.1, 0.1, crosshair_width/2, crosshair_height/2)
     
 end
