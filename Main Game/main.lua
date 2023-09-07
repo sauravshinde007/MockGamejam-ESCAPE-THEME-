@@ -12,11 +12,7 @@
 WINDOW_HEIGHT=750
 WINDOW_WIDTH=750
 
---------------------------Player------------------------------------------
-
-
 --------------------------Bullets---------------------------------------------
-
 
 all_bullets={}
 
@@ -32,8 +28,6 @@ function love.load()
 
     --player 
     Player={}
-    -- Player.width=50
-    -- Player.height=50
     Player.image=love.graphics.newImage("survivor-idle_rifle_0.png")
     Player.width=Player.image:getWidth()/2
     Player.height=Player.image:getHeight()-80
@@ -117,21 +111,8 @@ function love.update(dt)
             timer=0
         end
         
-
-
     end
 
-    --old implementation
-    -- for k, v in pairs(all_bullets) do
-    --     v.y=v.y-v.speed*dt
-    -- end
-
-    -- -- to delete extra bullets
-    -- for k, v in pairs(all_bullets) do
-    --     if v.y<-v.height  then
-    --             table.remove(all_bullets,k)  
-    --     end
-    -- end
     --------------------------bullet movement-----------------------------------------------------
     for k, v in pairs(all_bullets) do
         --bullet movement acc to mouse
