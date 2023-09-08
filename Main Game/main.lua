@@ -27,6 +27,8 @@ function spawnEnemy()
     enemy.width=32
     enemy.height=32
     enemy.speed=100
+    enemy.health_width=enemy.width
+    enemy.health_height=5
 
     return enemy
 end
@@ -61,7 +63,7 @@ function love.load()
     love.window.setMode(WINDOW_WIDTH,WINDOW_HEIGHT)
     timer=0 --for bullets
     timer2=0 --for enemies
-
+    score=0 ---score of the player
     -- Set the mouse cursor visibility to false
     love.mouse.setVisible(false)
 
@@ -87,6 +89,8 @@ function love.load()
     --sounds for the game
     mainmenu_sfx=love.audio.newSource("MainMenu.mp3","stream")
     maingame_sfx=love.audio.newSource("MainGame.mp3","stream")
+    gun_sfx=love.audio.newSource("gunshots.mp3","static")
+    damage_sfx=love.audio.newSource("damage.mp3","static")
 
     --states in the game:
     -- 1.Main Menu
@@ -177,6 +181,8 @@ function love.update(dt)
         -----------------------bullet creation and deletion acc to mouse-----------------------------------------------------
         if love.mouse.isDown(1) then
             if timer>=0.1 then
+
+                gun_sfx:play()
             
                 local bulletspeed=750
 
@@ -226,18 +232,33 @@ function love.update(dt)
         end
 
         -------------Collisions in game------------------------
-
-        for key, value in pairs(all_bullets) do
-            for k, v in pairs(all_enemies) do
+        --b/w bullet and enemy
+        for key, value in pairs(all_enemies) do
+            for k, v in pairs(all_bullets) do
                 if Collision(value,v) then
-                    table.remove(all_bullets,key)
-                    table.remove(all_enemies,k)
-                            
-                            
+                    table.remove(all_bullets,k)
+                    score=score+1
+                    value.health_width=value.health_width-value.width/3
+                    if value.health_width<=0 then
+                        table.remove(all_enemies,key)
+                        
+                    end
+                                
                 end
                         
             end
                     
+        end
+        --b/w enemy and player
+        for k, v in pairs(all_enemies) do
+            if Collision(v,Player) then
+                table.remove(all_enemies,k)
+                Player.health_width=Player.health_width*0.833
+
+                damage_sfx:play()
+                
+            end
+            
         end
 
 
@@ -303,6 +324,14 @@ function love.draw()
         love.graphics.setColor(0,0,0)
         love.graphics.rectangle("line",30,50,150,20)
 
+        --enemy health bar
+        for k, v in pairs(all_enemies) do
+            love.graphics.setColor(1,0,0)
+            love.graphics.rectangle("fill",v.x,v.y,v.health_width,v.health_height)
+            
+        end
+       
+
         --no of bullets generated
         love.graphics.print(#all_bullets,15,15)
 
@@ -318,6 +347,8 @@ function love.draw()
             love.graphics.circle("fill",v.x,v.y,10)
             
         end
+
+        
 
 
 
