@@ -44,6 +44,20 @@ function love.load()
     crosshair_image = love.graphics.newImage('crosshair.png')
     crosshair_width = crosshair_image:getWidth()
     crosshair_height = crosshair_image:getHeight()
+
+    --sounds for the game
+    mainmenu_sfx=love.audio.newSource("MainMenu.mp3","stream")
+    maingame_sfx=love.audio.newSource("MainGame.mp3","stream")
+
+    --states in the game:
+    -- 1.Main Menu
+    -- 2.Game Over
+    -- 3.Escape Menu
+    -- 4.Level 1
+    -- 5.Level 2 and so on
+    
+    state="Main Menu"
+    
     
 end
 
@@ -54,138 +68,177 @@ function love.update(dt)
     --for bullet
     timer=timer+dt
 
----------------------------mouse movement for player--------------------------------------------
-    --will find out mouse location
-    local mouseX, mouseY = love.mouse.getX() , love.mouse.getY()
+    if state=="Main Menu" then
 
-    -- --will maintain direction of player
-    -- if mouseX~=lastMouseX or mouseY ~=lastMouseY then
-    --     Player.angle=math.atan2(mouseY - (Player.y + Player.height / 2), mouseX - (Player.x + Player.width / 2)) 
-    -- end
+        --plays main menu sound
+        mainmenu_sfx:play()
 
-
-    -- Don't need this
-    --will maintain direction of player
-    --if mouseX~=lastMouseX or mouseY ~=lastMouseY then
-        --local angle= math.atan2(mouseY-Player.y,mouseX-Player.x)
-        --local delta= angle-Player.angle
-        --delta=(delta+math.pi) % (2 * math.pi) - math.pi -- Wrap to [-pi, pi]
-        --Player.angle=Player.angle+ delta*Player.roationspeed*dt
-        
-    --end
-
-    --lastMouseX,lastMouseY=mouseX,mouseY
-
-    -- This is enough to calc rotation
-    Player.angle=math.atan2(mouseY - (Player.y + Player.height / 2), mouseX - (Player.x + Player.width / 2))
-
-    --player movement on keyboard
-    if love.keyboard.isDown("a") and Player.x>0 then
-        Player.x=Player.x-Player.speed*dt
-        
-    end
-    if love.keyboard.isDown("w") and Player.y>0 then
-        Player.y=Player.y-Player.speed*dt
-        
-    end
-    if love.keyboard.isDown("s") and Player.y<WINDOW_HEIGHT-Player.height then
-        Player.y=Player.y+Player.speed*dt
-        
-    end
-    if love.keyboard.isDown("d") and Player.x<WINDOW_WIDTH-Player.width then
-        Player.x=Player.x+Player.speed*dt
-        
-    end
-
-    -----------------------bullet creation and deletion acc to mouse-----------------------------------------------------
-    if love.mouse.isDown(1) then
-          if timer>=0.1 then
-           
-            local bulletspeed=750
-
-            local bullet={}
-            bullet.width=5
-            bullet.height=15
-            -- bullet.x=Player.x+Player.width/2-bullet.width/2
-            -- bullet.y=Player.y+Player.height/2-bullet.height/2
-            bullet.x=Player.x+Player.width/2
-            bullet.y=Player.y+Player.height/2
-            bullet.dx= bulletspeed*math.cos(Player.angle)
-            bullet.dy= bulletspeed*math.sin(Player.angle)
-
-            table.insert(all_bullets,bullet)
-
-            timer=0
+        --to enter play state
+        if love.keyboard.isDown("return") then
+            state="Level 1"
         end
         
-    end
+    
 
-    --------------------------bullet movement-----------------------------------------------------
-    for k, v in pairs(all_bullets) do
-        --bullet movement acc to mouse
-        v.x=v.x+v.dx*dt
-        v.y=v.y+v.dy*dt
+    elseif state=="Level 1" then
 
-        --removing extra bullets of the screen
-        if v.x>WINDOW_WIDTH-v.width or v.x<0 or v.y>WINDOW_HEIGHT or v.y<-v.height  then
-            table.remove(all_bullets,k)
+        --MainGame sound
+        maingame_sfx:play()
+        mainmenu_sfx:stop()
+
+
+
+            ---------------------------mouse movement for player--------------------------------------------
+        --will find out mouse location
+        local mouseX, mouseY = love.mouse.getX() , love.mouse.getY()
+
+        -- --will maintain direction of player
+        -- if mouseX~=lastMouseX or mouseY ~=lastMouseY then
+        --     Player.angle=math.atan2(mouseY - (Player.y + Player.height / 2), mouseX - (Player.x + Player.width / 2)) 
+        -- end
+
+
+        -- Don't need this
+        --will maintain direction of player
+        --if mouseX~=lastMouseX or mouseY ~=lastMouseY then
+            --local angle= math.atan2(mouseY-Player.y,mouseX-Player.x)
+            --local delta= angle-Player.angle
+            --delta=(delta+math.pi) % (2 * math.pi) - math.pi -- Wrap to [-pi, pi]
+            --Player.angle=Player.angle+ delta*Player.roationspeed*dt
+            
+        --end
+
+        --lastMouseX,lastMouseY=mouseX,mouseY
+
+        -- This is enough to calc rotation
+        Player.angle=math.atan2(mouseY - (Player.y + Player.height / 2), mouseX - (Player.x + Player.width / 2))
+
+        --player movement on keyboard
+        if love.keyboard.isDown("a") and Player.x>0 then
+            Player.x=Player.x-Player.speed*dt
             
         end
-        
+        if love.keyboard.isDown("w") and Player.y>0 then
+            Player.y=Player.y-Player.speed*dt
+            
+        end
+        if love.keyboard.isDown("s") and Player.y<WINDOW_HEIGHT-Player.height then
+            Player.y=Player.y+Player.speed*dt
+            
+        end
+        if love.keyboard.isDown("d") and Player.x<WINDOW_WIDTH-Player.width then
+            Player.x=Player.x+Player.speed*dt
+            
+        end
+
+        -----------------------bullet creation and deletion acc to mouse-----------------------------------------------------
+        if love.mouse.isDown(1) then
+            if timer>=0.1 then
+            
+                local bulletspeed=750
+
+                local bullet={}
+                bullet.width=5
+                bullet.height=15
+                -- bullet.x=Player.x+Player.width/2-bullet.width/2
+                -- bullet.y=Player.y+Player.height/2-bullet.height/2
+                bullet.x=Player.x+Player.width/2
+                bullet.y=Player.y+Player.height/2
+                bullet.dx= bulletspeed*math.cos(Player.angle)
+                bullet.dy= bulletspeed*math.sin(Player.angle)
+
+                table.insert(all_bullets,bullet)
+
+                timer=0
+            end
+            
+        end
+
+        --------------------------bullet movement-----------------------------------------------------
+        for k, v in pairs(all_bullets) do
+            --bullet movement acc to mouse
+            v.x=v.x+v.dx*dt
+            v.y=v.y+v.dy*dt
+
+            --removing extra bullets of the screen
+            if v.x>WINDOW_WIDTH-v.width or v.x<0 or v.y>WINDOW_HEIGHT or v.y<-v.height  then
+                table.remove(all_bullets,k)
+                
+            end
+            
+        end
+    elseif state=="Level 2" then
+
     end
 
-end
+    
+
+    end
+
+
+
 
 function love.draw()
 
-    --font for the text
-    local font1=love.graphics.newFont("ARIALBD 1.TTF")
-    local font2=love.graphics.newFont("Akira Expanded Demo.otf")
+    if state=="Main Menu" then
+        
+    elseif state=="Level 1"  then
 
 
-    -- love.graphics.rectangle(mode,x,y,width,height)
-    -- love.graphics.setColor(1,1,1)
-    -- love.graphics.rectangle("fill",Player.x,Player.y,Player.width,Player.height)
-    -- love.graphics.draw(drawable,x,y,r,sx,sy,ox,oy)
-  
+            --font for the text
+        local font1=love.graphics.newFont("ARIALBD 1.TTF")
+        local font2=love.graphics.newFont("Akira Expanded Demo.otf")
 
-    --bullet
-    for k, v in pairs(all_bullets) do
-        -- love.graphics.circle(mode,x,y,radius)
+
+        -- love.graphics.rectangle(mode,x,y,width,height)
+        -- love.graphics.setColor(1,1,1)
+        -- love.graphics.rectangle("fill",Player.x,Player.y,Player.width,Player.height)
+        -- love.graphics.draw(drawable,x,y,r,sx,sy,ox,oy)
+    
+
+        --bullet
+        for k, v in pairs(all_bullets) do
+            -- love.graphics.circle(mode,x,y,radius)
+            love.graphics.setColor(1,1,1)
+            love.graphics.circle("fill",v.x,v.y,3)
+            
+        end
+
+        --player drawing
         love.graphics.setColor(1,1,1)
-        love.graphics.circle("fill",v.x,v.y,3)
+        centerX = Player.x + Player.width/2
+        centerY = Player.y + Player.height/2
+        love.graphics.draw(Player.image, centerX, centerY, Player.angle, 0.2, 0.2, centerX * 0.2, centerY * 0.2)
+
+        -- For Debugging
+        --love.graphics.circle("fill", centerX, centerY, 5)
+        --love.graphics.rectangle("line",Player.x,Player.y,Player.width,Player.height)
+
+        --to make players health
+        -- love.graphics.setFont(font1)
+        love.graphics.setColor(1,1,1)
+        love.graphics.setFont(font2)
+        love.graphics.print("Player's Health",30,30,0,1.1,1.1)
+        -- love.graphics.print(text,x,y,r,sx,sy,ox,oy)
+
+        --player health bar
+        love.graphics.setColor(0,1,0)
+        love.graphics.rectangle("fill",30,50,Player.health_width,Player.health_height)
+        love.graphics.setColor(0,0,0)
+        love.graphics.rectangle("line",30,50,150,20)
+
+        --no of bullets generated
+        love.graphics.print(#all_bullets,15,15)
+
+    
+        -- -- Draw the mouse cursor
+        love.graphics.setColor(1, 0, 0)
+        love.graphics.draw(crosshair_image, love.mouse.getX(), love.mouse.getY(), 0, 0.1, 0.1, crosshair_width/2, crosshair_height/2)
         
     end
 
-    --player drawing
-    love.graphics.setColor(1,1,1)
-    centerX = Player.x + Player.width/2
-    centerY = Player.y + Player.height/2
-    love.graphics.draw(Player.image, centerX, centerY, Player.angle, 0.2, 0.2, centerX * 0.2, centerY * 0.2)
 
-    -- For Debugging
-    --love.graphics.circle("fill", centerX, centerY, 5)
-    --love.graphics.rectangle("line",Player.x,Player.y,Player.width,Player.height)
 
-    --to make players health
-    -- love.graphics.setFont(font1)
-    love.graphics.setColor(1,1,1)
-    love.graphics.setFont(font2)
-    love.graphics.print("Player's Health",30,30,0,1.1,1.1)
-    -- love.graphics.print(text,x,y,r,sx,sy,ox,oy)
-
-    --player health bar
-    love.graphics.setColor(0,1,0)
-    love.graphics.rectangle("fill",30,50,Player.health_width,Player.health_height)
-    love.graphics.setColor(0,0,0)
-    love.graphics.rectangle("line",30,50,150,20)
-
-    --no of bullets generated
-    love.graphics.print(#all_bullets,15,15)
-
- 
-    -- -- Draw the mouse cursor
-    love.graphics.setColor(1, 0, 0)
-    love.graphics.draw(crosshair_image, love.mouse.getX(), love.mouse.getY(), 0, 0.1, 0.1, crosshair_width/2, crosshair_height/2)
-    
 end
+
+   
