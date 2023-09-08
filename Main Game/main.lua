@@ -12,16 +12,55 @@
 WINDOW_HEIGHT=750
 WINDOW_WIDTH=750
 
+math.randomseed(os.time())-- will generate a random number depending on time
+
 --------------------------Bullets---------------------------------------------
 
 all_bullets={}
+all_enemies={}
+
+--spawning enmies
+function spawnEnemy()
+    enemy={}
+    enemy.x=math.random(0,love.graphics.getWidth())
+    enemy.y=math.random(0,love.graphics.getHeight())
+    enemy.width=32
+    enemy.height=32
+    enemy.speed=100
+
+    return enemy
+end
+
+---enemy to follow player
+function updateEnemyAI(enemy,dt)
+    local dx = Player.x - enemy.x
+    local dy = Player.y - enemy.y
+    local angle = math.atan2(dy, dx)
+
+    enemy.x = enemy.x + math.cos(angle) * enemy.speed * dt
+    enemy.y = enemy.y + math.sin(angle) * enemy.speed * dt
+    
+end
+
+
+--------------------------Collision functionality-------------------------------------------
+function Collision(v,k)
+    return v.x<k.x+k.width and
+           v.x+v.width>k.x and
+           v.y<k.y+k.height and
+           v.y+v.height>k.y
+  end
 
 --will contain last location of the mouse
  lastMouseX, lastMouseY = love.mouse.getPosition()
 
+
+------------------------------Love Load----------------------------------------------------------
+
 function love.load()
     love.window.setMode(WINDOW_WIDTH,WINDOW_HEIGHT)
-    timer=0
+    timer=0 --for bullets
+    timer2=0 --for enemies
 
     -- Set the mouse cursor visibility to false
     love.mouse.setVisible(false)
@@ -62,11 +101,15 @@ function love.load()
 end
 
 
+------------------------------------------Love Update-----------------------------------------------------------
 
 function love.update(dt)
     
     --for bullet
     timer=timer+dt
+
+    --for enemy
+    timer2=timer2+dt
 
     if state=="Main Menu" then
 
@@ -167,6 +210,39 @@ function love.update(dt)
             end
             
         end
+
+        --------------------------Enemies creation and Deletion--------------------------------
+
+         -- ---------- enemy-----------------
+         if timer2>=1 then
+            table.insert(all_enemies,spawnEnemy())
+            timer2=0
+        end
+
+        --enemy movement
+        for k, v in pairs(all_enemies) do
+            updateEnemyAI(v,dt)
+            
+        end
+
+        -------------Collisions in game------------------------
+
+        for key, value in pairs(all_bullets) do
+            for k, v in pairs(all_enemies) do
+                if Collision(value,v) then
+                    table.remove(all_bullets,key)
+                    table.remove(all_enemies,k)
+                            
+                            
+                end
+                        
+            end
+                    
+        end
+
+
+ 
+
     elseif state=="Level 2" then
 
     end
@@ -176,7 +252,7 @@ function love.update(dt)
     end
 
 
-
+-----------------------------------Love Draw--------------------------------------------------
 
 function love.draw()
 
@@ -234,7 +310,19 @@ function love.draw()
         -- -- Draw the mouse cursor
         love.graphics.setColor(1, 0, 0)
         love.graphics.draw(crosshair_image, love.mouse.getX(), love.mouse.getY(), 0, 0.1, 0.1, crosshair_width/2, crosshair_height/2)
-        
+
+        --enemies
+        for k, v in pairs(all_enemies) do
+            
+            love.graphics.setColor(0,1,1)
+            love.graphics.circle("fill",v.x,v.y,10)
+            
+        end
+
+
+
+    elseif state=="Level 2" then
+
     end
 
 
