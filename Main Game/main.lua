@@ -78,7 +78,7 @@ function love.load()
     Player.angle=0
     Player.roationspeed=10
 
-    --images for the game
+    --images for the games
     player_image=love.graphics.newImage("survivor-idle_rifle_0.png")
     crosshair_image = love.graphics.newImage('crosshair.png')
     crosshair_width = crosshair_image:getWidth()
