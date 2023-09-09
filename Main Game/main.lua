@@ -79,6 +79,7 @@ function love.load()
     Player.health_height=20
     Player.angle=0
     Player.roationspeed=10
+    Player.health=100
 
     --images for the games
     player_image=love.graphics.newImage("survivor-idle_rifle_0.png")
@@ -91,10 +92,11 @@ function love.load()
     maingame_sfx=love.audio.newSource("MainGame.mp3","stream")
     gun_sfx=love.audio.newSource("gunshots.mp3","static")
     damage_sfx=love.audio.newSource("damage.mp3","static")
+    gameover_sfx=love.audio.newSource("GameOver.mp3","stream")
 
     --states in the game:
     -- 1.Main Menu
-    -- 2.Game Over
+    -- 2.End
     -- 3.Escape Menu
     -- 4.Level 1
     -- 5.Level 2 and so on
@@ -132,6 +134,7 @@ function love.update(dt)
         --MainGame sound
         maingame_sfx:play()
         mainmenu_sfx:stop()
+        gameover_sfx:stop()
 
 
 
@@ -237,10 +240,11 @@ function love.update(dt)
             for k, v in pairs(all_bullets) do
                 if Collision(value,v) then
                     table.remove(all_bullets,k)
-                    score=score+1
+                    
                     value.health_width=value.health_width-value.width/3
                     if value.health_width<=0 then
                         table.remove(all_enemies,key)
+                        score=score+1
                         
                     end
                                 
@@ -249,22 +253,38 @@ function love.update(dt)
             end
                     
         end
+
         --b/w enemy and player
         for k, v in pairs(all_enemies) do
             if Collision(v,Player) then
                 table.remove(all_enemies,k)
                 Player.health_width=Player.health_width*0.833
-
                 damage_sfx:play()
-                
+                Player.health=Player.health-10
+   
             end
             
         end
 
+        --to end the game
+        if Player.health==0 then
+            state="End"
+            
+        end
 
- 
+        
+    elseif state=="End" then
+        maingame_sfx:stop()
+        gameover_sfx:play()
 
-    elseif state=="Level 2" then
+        if love.keyboard.isDown("return") then
+            state="Level 1"
+
+            --wil make intial situation of the game
+            Player.health=100
+            score=0
+            timer2=0
+        end
 
     end
 
@@ -280,7 +300,6 @@ function love.draw()
     if state=="Main Menu" then
         
     elseif state=="Level 1"  then
-
 
             --font for the text
         local font1=love.graphics.newFont("ARIALBD 1.TTF")
@@ -312,24 +331,36 @@ function love.draw()
         --love.graphics.rectangle("line",Player.x,Player.y,Player.width,Player.height)
 
         --to make players health
-        -- love.graphics.setFont(font1)
         love.graphics.setColor(1,1,1)
         love.graphics.setFont(font2)
         love.graphics.print("Player's Health",30,30,0,1.1,1.1)
         -- love.graphics.print(text,x,y,r,sx,sy,ox,oy)
 
-        --player health bar
+        -- --player health bar
+        -- love.graphics.setColor(0,1,0)
+        -- love.graphics.rectangle("fill",30,50,Player.health_width,Player.health_height)
+        -- love.graphics.setColor(0,0,0)
+        -- love.graphics.rectangle("line",30,50,150,20)
+
+        --Players Health Points
         love.graphics.setColor(0,1,0)
-        love.graphics.rectangle("fill",30,50,Player.health_width,Player.health_height)
-        love.graphics.setColor(0,0,0)
-        love.graphics.rectangle("line",30,50,150,20)
+        love.graphics.setFont(font2)
+        love.graphics.print(Player.health,30,50,0,1.1,1.1)
+
 
         --enemy health bar
         for k, v in pairs(all_enemies) do
             love.graphics.setColor(1,0,0)
-            love.graphics.rectangle("fill",v.x,v.y,v.health_width,v.health_height)
+            love.graphics.rectangle("fill",v.x-20,v.y-20,v.health_width,v.health_height)
             
         end
+
+        --display score
+        love.graphics.setFont(font2)
+        love.graphics.setColor(1,1,1)
+        -- love.graphics.print(text,x,y,r,sx,sy,ox,oy)
+        love.graphics.print("SCORE",WINDOW_WIDTH-90,30,0,1.1,1.1)
+        love.graphics.print(score,WINDOW_WIDTH-50,50,0,1.1,1.1)
        
 
         --no of bullets generated
@@ -347,12 +378,9 @@ function love.draw()
             love.graphics.circle("fill",v.x,v.y,10)
             
         end
+ 
+    elseif state=="End" then
 
-        
-
-
-
-    elseif state=="Level 2" then
 
     end
 
