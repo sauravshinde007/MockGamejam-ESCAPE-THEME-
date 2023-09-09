@@ -75,8 +75,6 @@ function love.load()
     Player.y=WINDOW_HEIGHT-Player.height
     Player.x=WINDOW_WIDTH/2-Player.width/2
     Player.speed=200
-    Player.health_width=150
-    Player.health_height=20
     Player.angle=0
     Player.roationspeed=10
     Player.health=100
@@ -105,7 +103,6 @@ function love.load()
     
     
 end
-
 
 ------------------------------------------Love Update-----------------------------------------------------------
 
@@ -136,27 +133,9 @@ function love.update(dt)
         mainmenu_sfx:stop()
         gameover_sfx:stop()
 
-
-
             ---------------------------mouse movement for player--------------------------------------------
         --will find out mouse location
         local mouseX, mouseY = love.mouse.getX() , love.mouse.getY()
-
-        -- --will maintain direction of player
-        -- if mouseX~=lastMouseX or mouseY ~=lastMouseY then
-        --     Player.angle=math.atan2(mouseY - (Player.y + Player.height / 2), mouseX - (Player.x + Player.width / 2)) 
-        -- end
-
-
-        -- Don't need this
-        --will maintain direction of player
-        --if mouseX~=lastMouseX or mouseY ~=lastMouseY then
-            --local angle= math.atan2(mouseY-Player.y,mouseX-Player.x)
-            --local delta= angle-Player.angle
-            --delta=(delta+math.pi) % (2 * math.pi) - math.pi -- Wrap to [-pi, pi]
-            --Player.angle=Player.angle+ delta*Player.roationspeed*dt
-            
-        --end
 
         --lastMouseX,lastMouseY=mouseX,mouseY
 
@@ -258,7 +237,6 @@ function love.update(dt)
         for k, v in pairs(all_enemies) do
             if Collision(v,Player) then
                 table.remove(all_enemies,k)
-                Player.health_width=Player.health_width*0.833
                 damage_sfx:play()
                 Player.health=Player.health-10
    
@@ -272,7 +250,7 @@ function love.update(dt)
             
         end
 
-        
+    --Game OVer State of the Game
     elseif state=="End" then
         maingame_sfx:stop()
         gameover_sfx:play()
@@ -284,14 +262,19 @@ function love.update(dt)
             Player.health=100
             score=0
             timer2=0
+            Player.y=WINDOW_HEIGHT-Player.height
+            Player.x=WINDOW_WIDTH/2-Player.width/2
+
         end
+
+    elseif state=="Level 2" then
+
 
     end
 
     
 
     end
-
 
 -----------------------------------Love Draw--------------------------------------------------
 
@@ -302,8 +285,8 @@ function love.draw()
     elseif state=="Level 1"  then
 
             --font for the text
-        local font1=love.graphics.newFont("ARIALBD 1.TTF")
-        local font2=love.graphics.newFont("Akira Expanded Demo.otf")
+         font1=love.graphics.newFont("ARIALBD 1.TTF")
+         font2=love.graphics.newFont("Akira Expanded Demo.otf")
 
 
         -- love.graphics.rectangle(mode,x,y,width,height)
@@ -333,19 +316,13 @@ function love.draw()
         --to make players health
         love.graphics.setColor(1,1,1)
         love.graphics.setFont(font2)
-        love.graphics.print("Player's Health",30,30,0,1.1,1.1)
+        love.graphics.print("Player's Health",30,30,0,1.5,1.5)
         -- love.graphics.print(text,x,y,r,sx,sy,ox,oy)
-
-        -- --player health bar
-        -- love.graphics.setColor(0,1,0)
-        -- love.graphics.rectangle("fill",30,50,Player.health_width,Player.health_height)
-        -- love.graphics.setColor(0,0,0)
-        -- love.graphics.rectangle("line",30,50,150,20)
 
         --Players Health Points
         love.graphics.setColor(0,1,0)
         love.graphics.setFont(font2)
-        love.graphics.print(Player.health,30,50,0,1.1,1.1)
+        love.graphics.print(Player.health,30,50,0,1.5,1.5)
 
 
         --enemy health bar
@@ -359,8 +336,8 @@ function love.draw()
         love.graphics.setFont(font2)
         love.graphics.setColor(1,1,1)
         -- love.graphics.print(text,x,y,r,sx,sy,ox,oy)
-        love.graphics.print("SCORE",WINDOW_WIDTH-90,30,0,1.1,1.1)
-        love.graphics.print(score,WINDOW_WIDTH-50,50,0,1.1,1.1)
+        love.graphics.print("SCORE",WINDOW_WIDTH-90,30,0,1.5,1.5)
+        love.graphics.print(score,WINDOW_WIDTH-50,50,0,1.5,1.5)
        
 
         --no of bullets generated
@@ -379,10 +356,20 @@ function love.draw()
             
         end
  
+    --Game Over screen
     elseif state=="End" then
+
+    
+        love.graphics.setFont(font2)
+        love.graphics.setColor(1,1,1)
+        love.graphics.print("Game Over",love.graphics.getWidth()/2-30,love.graphics.getHeight()/2,0,2,2)
+
+    elseif state=="Level 2" then
+
 
 
     end
+    
 
 
 
