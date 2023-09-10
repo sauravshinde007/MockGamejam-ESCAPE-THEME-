@@ -89,7 +89,7 @@ function love.load()
     mainmenu_sfx=love.audio.newSource("MainMenu.mp3","stream")
     maingame_sfx=love.audio.newSource("MainGame.mp3","stream")
     gun_sfx=love.audio.newSource("gunshots.mp3","static")
-    damage_sfx=love.audio.newSource("damage.mp3","static")
+    damage_sfx=love.audio.newSource("Sounds/damage.mp3","static")
     gameover_sfx=love.audio.newSource("GameOver.mp3","stream")
 
     --states in the game:
