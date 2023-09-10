@@ -12,17 +12,10 @@
 WINDOW_HEIGHT=750
 WINDOW_WIDTH=750
 
-math.randomseed(os.time())-- will generate a random number depending on time
+math.randomseed(os.time()) -- will generate a random number depending on time
 
 --------------------------Portal----------------------------------------------
-Portal = {}
-Portal.width = 50
-Portal.height = 50
-Portal.x = WINDOW_WIDTH/2-Portal.width/2
-Portal.y = 10
-Portal.image = love.graphics.newImage("Sprites/portal.png")
-Portal.show = false
-Portal.pos_set = false
+Portal = require('portal')
 
 --------------------------Bullets---------------------------------------------
 
@@ -78,16 +71,7 @@ function love.load()
     love.mouse.setVisible(false)
 
     --player 
-    Player={}
-    Player.image=love.graphics.newImage("Sprites/player_img.png")
-    Player.width=30
-    Player.height=30
-    Player.y=WINDOW_HEIGHT-Player.height
-    Player.x=WINDOW_WIDTH/2-Player.width/2
-    Player.speed=200
-    Player.angle=0
-    Player.roationspeed=10
-    Player.health=100
+    Player = require('player')
 
     --images for the games
     crosshair_image = love.graphics.newImage('Sprites/crosshair.png')
