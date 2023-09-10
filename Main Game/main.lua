@@ -21,6 +21,8 @@ Portal.height = 50
 Portal.x = WINDOW_WIDTH/2-Portal.width/2
 Portal.y = 10
 Portal.image = love.graphics.newImage("Sprites/portal.png")
+Portal.show = false
+Portal.pos_set = false
 
 --------------------------Bullets---------------------------------------------
 
@@ -248,9 +250,17 @@ function love.update(dt)
             end
         end
 
-        -- Portal and player
-        if Collision(Player, Portal) and score > 100 then
-            print("Done")
+        -- Level cleared
+        if score > 10 and not Portal.pos_set then
+            Portal.x = math.floor(math.random() * WINDOW_WIDTH)
+            Portal.y = math.floor(math.random() * WINDOW_HEIGHT)
+            Portal.show = true
+            Portal.pos_set = true
+        end
+
+        -- Collision of player and portal
+        if Portal.show and Collision(Portal, Player) then
+            state = "Level 2"
         end
 
         --to end the game
@@ -319,8 +329,10 @@ function love.draw()
         end
 
         -- Portal Drawing
-        love.graphics.setColor(1, 1, 1)
-        love.graphics.draw(Portal.image, Portal.x, Portal.y, 0, 0.2, 0.2, Portal.width, Portal.height)
+        if Portal.show then
+            love.graphics.setColor(1, 1, 1)
+            love.graphics.draw(Portal.image, Portal.x, Portal.y, 0, 0.2, 0.2, Portal.width, Portal.height)
+        end
 
         --player drawing
         love.graphics.setColor(1,1,1)
@@ -385,7 +397,7 @@ function love.draw()
 
     elseif state=="Level 2" then
 
-
+        love.graphics.setBackgroundColor(0, 1, 0)
 
     end
     
