@@ -69,7 +69,7 @@ function love.load()
 
     --player 
     Player={}
-    Player.image=love.graphics.newImage("survivor-idle_rifle_0.png")
+    Player.image=love.graphics.newImage("Sprites/player_img.png")
     Player.width=30
     Player.height=30
     Player.y=WINDOW_HEIGHT-Player.height
@@ -80,17 +80,16 @@ function love.load()
     Player.health=100
 
     --images for the games
-    player_image=love.graphics.newImage("survivor-idle_rifle_0.png")
-    crosshair_image = love.graphics.newImage('crosshair.png')
+    crosshair_image = love.graphics.newImage('Sprites/crosshair.png')
     crosshair_width = crosshair_image:getWidth()
     crosshair_height = crosshair_image:getHeight()
 
     --sounds for the game
-    mainmenu_sfx=love.audio.newSource("MainMenu.mp3","stream")
-    maingame_sfx=love.audio.newSource("MainGame.mp3","stream")
-    gun_sfx=love.audio.newSource("gunshots.mp3","static")
+    mainmenu_sfx=love.audio.newSource("Sounds/MainMenu.mp3","stream")
+    maingame_sfx=love.audio.newSource("Sounds/MainGame.mp3","stream")
+    gun_sfx=love.audio.newSource("Sounds/gunshots.mp3","static")
     damage_sfx=love.audio.newSource("Sounds/damage.mp3","static")
-    gameover_sfx=love.audio.newSource("GameOver.mp3","stream")
+    gameover_sfx=love.audio.newSource("Sounds/GameOver.mp3","stream")
 
     --states in the game:
     -- 1.Main Menu
@@ -285,8 +284,8 @@ function love.draw()
     elseif state=="Level 1"  then
 
             --font for the text
-         font1=love.graphics.newFont("ARIALBD 1.TTF")
-         font2=love.graphics.newFont("Akira Expanded Demo.otf")
+         font1=love.graphics.newFont("Fonts/ARIALBD 1.TTF")
+         font2=love.graphics.newFont("Fonts/Akira Expanded Demo.otf")
 
 
         -- love.graphics.rectangle(mode,x,y,width,height)
