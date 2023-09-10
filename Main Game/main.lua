@@ -83,6 +83,9 @@ function love.load()
     crosshair_image = love.graphics.newImage('Sprites/crosshair.png')
     crosshair_width = crosshair_image:getWidth()
     crosshair_height = crosshair_image:getHeight()
+    lava=love.graphics.newImage("Assets/Ground_3.png")
+    snow=love.graphics.newImage("Assets/white-snow-minecraft-pattern_SB_PM.jpg")
+    ground=love.graphics.newImage("Assets/Tileable classic grass and dirt texture.jpg")
 
     --sounds for the game
     mainmenu_sfx=love.audio.newSource("Sounds/MainMenu.mp3","stream")
@@ -282,6 +285,9 @@ function love.draw()
     if state=="Main Menu" then
         
     elseif state=="Level 1"  then
+
+        --ground bg
+        love.graphics.draw(ground,0,0,0,2.5,2.5)
 
             --font for the text
          font1=love.graphics.newFont("Fonts/ARIALBD 1.TTF")
