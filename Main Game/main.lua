@@ -14,6 +14,14 @@ WINDOW_WIDTH=750
 
 math.randomseed(os.time())-- will generate a random number depending on time
 
+--------------------------Portal----------------------------------------------
+Portal = {}
+Portal.width = 50
+Portal.height = 50
+Portal.x = WINDOW_WIDTH/2-Portal.width/2
+Portal.y = 10
+Portal.image = love.graphics.newImage("Sprites/portal.png")
+
 --------------------------Bullets---------------------------------------------
 
 all_bullets={}
@@ -99,7 +107,6 @@ function love.load()
     -- 5.Level 2 and so on
     
     state="Main Menu"
-    
     
 end
 
@@ -222,14 +229,10 @@ function love.update(dt)
                     value.health_width=value.health_width-value.width/3
                     if value.health_width<=0 then
                         table.remove(all_enemies,key)
-                        score=score+1
-                        
+                        score=score+math.floor(math.random() * 10)
                     end
-                                
                 end
-                        
             end
-                    
         end
 
         --b/w enemy and player
@@ -240,7 +243,11 @@ function love.update(dt)
                 Player.health=Player.health-10
    
             end
-            
+        end
+
+        -- Portal and player
+        if Collision(Player, Portal) and score > 100 then
+            print("Done")
         end
 
         --to end the game
@@ -279,6 +286,8 @@ function love.update(dt)
 
 function love.draw()
 
+    love.graphics.setBackgroundColor(247/255, 104/255, 6/255)
+
     if state=="Main Menu" then
         
     elseif state=="Level 1"  then
@@ -301,6 +310,10 @@ function love.draw()
             love.graphics.circle("fill",v.x,v.y,3)
             
         end
+
+        -- Portal Drawing
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.draw(Portal.image, Portal.x, Portal.y, 0, 0.2, 0.2, Portal.width, Portal.height)
 
         --player drawing
         love.graphics.setColor(1,1,1)
